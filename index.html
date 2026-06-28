@@ -1,0 +1,2197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AtharvaSecuity — Cybersecurity Blog</title>
+
+  <!-- SEO Meta -->
+  <meta name="description" content="Cybersecurity blog, tutorials, CTF writeups and video guides by Atharva. Learn ethical hacking, penetration testing, and security research." />
+  <meta name="keywords" content="cybersecurity, ethical hacking, CTF, penetration testing, bug bounty, security research, Atharva" />
+  <meta name="author" content="Atharva" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="AtharvaSecuity — Cybersecurity Blog" />
+  <meta property="og:description" content="Cybersecurity tutorials, CTF writeups, and security research by Atharva." />
+  <meta property="og:url" content="https://atharvaSecurity.github.io" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AtharvaSecuity" />
+  <meta name="twitter:description" content="Cybersecurity tutorials, CTF writeups, and security research." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =====================================================
+       DESIGN TOKENS — Catppuccin Mocha
+    ===================================================== */
+    :root {
+      --base:    #1e1e2e;
+      --mantle:  #181825;
+      --crust:   #11111b;
+      --surface: #313244;
+      --overlay: #6c7086;
+      --text:    #cdd6f4;
+      --subtext: #a6adc8;
+      --mauve:   #cba6f7;
+      --blue:    #89b4fa;
+      --green:   #a6e3a1;
+      --peach:   #fab387;
+      --pink:    #f5c2e7;
+      --red:     #f38ba8;
+      --yellow:  #f9e2af;
+
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+      --nav-h: 64px;
+      --radius: 10px;
+      --radius-lg: 16px;
+      --transition: 0.22s ease;
+      --glow-mauve: 0 0 20px rgba(203,166,247,0.25);
+      --glow-blue:  0 0 20px rgba(137,180,250,0.25);
+    }
+
+    /* =====================================================
+       RESET & BASE
+    ===================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--base);
+      color: var(--text);
+      line-height: 1.65;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    ul { list-style: none; }
+
+    ::selection { background: var(--mauve); color: var(--crust); }
+
+    /* =====================================================
+       SCROLL PROGRESS BAR
+    ===================================================== */
+    #progress-bar {
+      position: fixed; top: 0; left: 0; z-index: 9999;
+      height: 2px; width: 0%;
+      background: linear-gradient(90deg, var(--mauve), var(--blue));
+      transition: width 0.1s linear;
+    }
+
+    /* =====================================================
+       LOADING SCREEN
+    ===================================================== */
+    #loader {
+      position: fixed; inset: 0; z-index: 9998;
+      background: var(--crust);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #loader.hidden { opacity: 0; visibility: hidden; }
+    .loader-logo {
+      font-family: var(--font-mono);
+      font-size: 1.4rem;
+      color: var(--mauve);
+      letter-spacing: 0.05em;
+    }
+    .loader-bar {
+      width: 180px; height: 2px;
+      background: var(--surface);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .loader-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--mauve), var(--blue));
+      animation: load-fill 1.2s ease forwards;
+    }
+    @keyframes load-fill { from { width: 0 } to { width: 100% } }
+
+    /* =====================================================
+       CANVAS BACKGROUND
+    ===================================================== */
+    #bg-canvas {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+    }
+
+    /* =====================================================
+       NAVIGATION
+    ===================================================== */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: var(--nav-h);
+      background: rgba(24,24,37,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(203,166,247,0.08);
+      display: flex; align-items: center;
+      padding: 0 clamp(1rem, 5vw, 3rem);
+      transition: background var(--transition);
+    }
+    .nav-inner {
+      max-width: 1100px; width: 100%; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand {
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--mauve);
+      letter-spacing: 0.04em;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-brand span { color: var(--blue); }
+    .nav-links {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .nav-links a, .nav-links button {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--subtext);
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: color var(--transition), background var(--transition);
+    }
+    .nav-links a:hover, .nav-links button:hover,
+    .nav-links a.active { color: var(--text); background: var(--surface); }
+    .nav-links .nav-cta {
+      color: var(--mauve);
+      border: 1px solid rgba(203,166,247,0.35);
+      margin-left: 6px;
+    }
+    .nav-links .nav-cta:hover { background: rgba(203,166,247,0.1); }
+
+    /* Hamburger */
+    .nav-toggle {
+      display: none;
+      flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 4px;
+      background: none; border: none;
+    }
+    .nav-toggle span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text); border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    /* =====================================================
+       PAGE ROUTER
+    ===================================================== */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* Main wrapper */
+    main {
+      padding-top: var(--nav-h);
+      position: relative; z-index: 1;
+    }
+
+    /* =====================================================
+       SECTION WRAPPER
+    ===================================================== */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(4rem, 8vw, 6rem) clamp(1rem, 5vw, 3rem);
+    }
+
+    /* =====================================================
+       TYPOGRAPHY UTILS
+    ===================================================== */
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mauve);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+    .section-sub {
+      color: var(--subtext);
+      font-size: 1rem;
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+    }
+
+    /* =====================================================
+       HOME — HERO
+    ===================================================== */
+    #hero {
+      min-height: calc(100vh - var(--nav-h));
+      display: flex; align-items: center;
+      padding: clamp(3rem, 10vw, 7rem) clamp(1rem, 5vw, 3rem);
+      position: relative;
+    }
+    .hero-inner {
+      max-width: 1100px; margin: 0 auto; width: 100%;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--green);
+      background: rgba(166,227,161,0.08);
+      border: 1px solid rgba(166,227,161,0.2);
+      border-radius: 100px;
+      padding: 5px 14px;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.06em;
+    }
+    .hero-tag::before { content: '●'; font-size: 0.55rem; }
+    .hero-name {
+      font-size: clamp(2.4rem, 7vw, 5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+    .hero-name em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--mauve), var(--blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--subtext);
+      margin-bottom: 2rem;
+      max-width: 520px;
+    }
+    /* Typing cursor */
+    #typed-cursor {
+      display: inline-block;
+      width: 2px; height: 1.1em;
+      background: var(--mauve);
+      margin-left: 2px;
+      vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0 } }
+
+    .hero-actions {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all var(--transition);
+      font-family: var(--font-sans);
+    }
+    .btn-primary {
+      background: var(--mauve);
+      color: var(--crust);
+    }
+    .btn-primary:hover {
+      background: #d4b8f8;
+      box-shadow: 0 0 24px rgba(203,166,247,0.4);
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--surface);
+    }
+    .btn-ghost:hover {
+      border-color: var(--mauve);
+      color: var(--mauve);
+      transform: translateY(-1px);
+    }
+
+    /* Hero stats */
+    .hero-stats {
+      display: flex; gap: 2rem; flex-wrap: wrap;
+    }
+    .hero-stat {
+      display: flex; flex-direction: column;
+    }
+    .hero-stat strong {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--mauve);
+    }
+    .hero-stat span {
+      font-size: 0.8rem;
+      color: var(--overlay);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* =====================================================
+       HOME — FEATURED POSTS
+    ===================================================== */
+    .home-section { background: transparent; }
+
+    /* =====================================================
+       CARD GRID
+    ===================================================== */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+    .card {
+      background: var(--mantle);
+      border: 1px solid var(--surface);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(203,166,247,0.35);
+      box-shadow: var(--glow-mauve);
+    }
+    .card-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+    .card-thumb img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .card:hover .card-thumb img { transform: scale(1.04); }
+    .card-thumb-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      color: var(--overlay);
+    }
+    .card-body { padding: 1.25rem; }
+    .card-meta {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.75rem;
+      color: var(--overlay);
+      font-family: var(--font-mono);
+      margin-bottom: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .card-meta .tag {
+      background: rgba(203,166,247,0.1);
+      color: var(--mauve);
+      border: 1px solid rgba(203,166,247,0.2);
+      border-radius: 4px;
+      padding: 1px 7px;
+      font-size: 0.7rem;
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.35;
+      margin-bottom: 0.5rem;
+    }
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--subtext);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--overlay);
+    }
+    .card-footer a, .card-footer button {
+      color: var(--blue);
+      font-weight: 500;
+      font-size: 0.82rem;
+      background: none; border: none; cursor: pointer;
+      font-family: var(--font-sans);
+      transition: color var(--transition);
+    }
+    .card-footer a:hover, .card-footer button:hover { color: var(--mauve); }
+
+    /* =====================================================
+       DIVIDER
+    ===================================================== */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--surface);
+      margin: 0;
+    }
+
+    /* =====================================================
+       BLOG PAGE
+    ===================================================== */
+    .blog-header { margin-bottom: 2rem; }
+    .search-bar {
+      display: flex; gap: 10px; align-items: center;
+      background: var(--mantle);
+      border: 1px solid var(--surface);
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      max-width: 480px;
+      margin-bottom: 1.5rem;
+      transition: border-color var(--transition);
+    }
+    .search-bar:focus-within {
+      border-color: rgba(203,166,247,0.5);
+      box-shadow: 0 0 0 3px rgba(203,166,247,0.08);
+    }
+    .search-bar svg { color: var(--overlay); flex-shrink: 0; }
+    .search-bar input {
+      background: none; border: none; outline: none;
+      color: var(--text); font-family: var(--font-sans);
+      font-size: 0.9rem; width: 100%;
+    }
+    .search-bar input::placeholder { color: var(--overlay); }
+
+    .filter-row {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .filter-btn {
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 100px;
+      border: 1px solid var(--surface);
+      background: none;
+      color: var(--subtext);
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all var(--transition);
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--mauve);
+      color: var(--mauve);
+      background: rgba(203,166,247,0.08);
+    }
+
+    /* =====================================================
+       VIDEO PAGE
+    ===================================================== */
+    .yt-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--peach);
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 8px 18px;
+      border: 1px solid rgba(250,179,135,0.3);
+      border-radius: var(--radius);
+      transition: all var(--transition);
+    }
+    .yt-link:hover {
+      background: rgba(250,179,135,0.08);
+      box-shadow: 0 0 14px rgba(250,179,135,0.2);
+    }
+    .video-badge {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(17,17,27,0.85);
+      border: 1px solid var(--surface);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--subtext);
+    }
+    .watch-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--peach);
+      font-weight: 500;
+      font-size: 0.82rem;
+      border: none; background: none; cursor: pointer;
+      font-family: var(--font-sans);
+      transition: color var(--transition);
+    }
+    .watch-btn:hover { color: #ffc09e; }
+
+    /* =====================================================
+       ABOUT PAGE
+    ===================================================== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .about-avatar-wrap {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 1rem;
+    }
+    .about-avatar {
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      border: 2px solid rgba(203,166,247,0.4);
+      box-shadow: 0 0 30px rgba(203,166,247,0.2);
+      background: var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem;
+      user-select: none;
+      overflow: hidden;
+    }
+    .about-social {
+      display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+    }
+    .social-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--subtext);
+      border: 1px solid var(--surface);
+      border-radius: 100px;
+      padding: 5px 14px;
+      transition: all var(--transition);
+    }
+    .social-chip:hover {
+      color: var(--text);
+      border-color: var(--overlay);
+    }
+    .about-content h2 {
+      font-size: 1.8rem; font-weight: 700;
+      color: var(--text); margin-bottom: 0.25rem;
+    }
+    .about-content .role {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--mauve);
+      margin-bottom: 1.5rem;
+    }
+    .about-content p {
+      color: var(--subtext);
+      line-height: 1.75;
+      margin-bottom: 1rem;
+    }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    .skill-chip {
+      background: var(--mantle);
+      border: 1px solid var(--surface);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--subtext);
+      display: flex; align-items: center; gap: 8px;
+      transition: border-color var(--transition), color var(--transition);
+    }
+    .skill-chip:hover { border-color: var(--mauve); color: var(--text); }
+    .skill-chip .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--mauve); flex-shrink: 0;
+    }
+
+    /* =====================================================
+       CONTACT PAGE
+    ===================================================== */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .contact-info h3 {
+      font-size: 1.1rem; font-weight: 600;
+      color: var(--text); margin-bottom: 0.5rem;
+    }
+    .contact-info p {
+      color: var(--subtext); font-size: 0.9rem;
+      line-height: 1.7; margin-bottom: 1.5rem;
+    }
+    .contact-links { display: flex; flex-direction: column; gap: 10px; }
+    .contact-link {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.9rem; color: var(--subtext);
+      padding: 10px 14px;
+      background: var(--mantle);
+      border: 1px solid var(--surface);
+      border-radius: var(--radius);
+      transition: all var(--transition);
+    }
+    .contact-link:hover {
+      color: var(--text);
+      border-color: rgba(203,166,247,0.3);
+    }
+    .form-card {
+      background: var(--mantle);
+      border: 1px solid var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+    }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--subtext);
+      margin-bottom: 0.4rem;
+    }
+    .form-control {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    .form-control:focus {
+      border-color: rgba(203,166,247,0.5);
+      box-shadow: 0 0 0 3px rgba(203,166,247,0.07);
+    }
+    .form-control::placeholder { color: var(--overlay); }
+    textarea.form-control { resize: vertical; min-height: 120px; }
+
+    /* =====================================================
+       AUTH PAGES
+    ===================================================== */
+    .auth-wrap {
+      min-height: calc(100vh - var(--nav-h));
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .auth-card {
+      width: 100%; max-width: 420px;
+      background: var(--mantle);
+      border: 1px solid var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+    }
+    .auth-card h2 {
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--text); margin-bottom: 0.25rem;
+    }
+    .auth-card p {
+      color: var(--subtext); font-size: 0.85rem;
+      margin-bottom: 1.75rem;
+    }
+    .auth-switch {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--subtext);
+      margin-top: 1.5rem;
+    }
+    .auth-switch button {
+      background: none; border: none; cursor: pointer;
+      color: var(--mauve); font-weight: 500;
+      font-family: var(--font-sans); font-size: inherit;
+    }
+    .auth-switch button:hover { text-decoration: underline; }
+    .form-check {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.85rem;
+      color: var(--subtext);
+      margin-bottom: 1.25rem;
+    }
+    .form-check input { accent-color: var(--mauve); }
+    .error-msg {
+      color: var(--red);
+      font-size: 0.8rem;
+      margin-top: 0.35rem;
+      display: none;
+    }
+    .error-msg.visible { display: block; }
+    .success-msg {
+      color: var(--green);
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 0.75rem;
+      display: none;
+    }
+    .success-msg.visible { display: block; }
+
+    /* =====================================================
+       DASHBOARD
+    ===================================================== */
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    .dash-sidebar {
+      background: var(--mantle);
+      border: 1px solid var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      position: sticky; top: calc(var(--nav-h) + 1.5rem);
+    }
+    .dash-avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 2px solid rgba(203,166,247,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    .dash-user-name {
+      font-weight: 600; font-size: 1rem; color: var(--text);
+      margin-bottom: 2px;
+    }
+    .dash-user-role {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--mauve);
+      margin-bottom: 1.25rem;
+    }
+    .dash-nav { display: flex; flex-direction: column; gap: 4px; }
+    .dash-nav-btn {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--subtext);
+      border: none; background: none; cursor: pointer;
+      font-family: var(--font-sans);
+      text-align: left;
+      transition: all var(--transition);
+    }
+    .dash-nav-btn:hover, .dash-nav-btn.active {
+      color: var(--text);
+      background: var(--surface);
+    }
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--mantle);
+      border: 1px solid var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+    }
+    .stat-card .val {
+      font-family: var(--font-mono);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--mauve);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-card .lbl {
+      font-size: 0.78rem;
+      color: var(--overlay);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .dash-panel {
+      background: var(--mantle);
+      border: 1px solid var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .dash-panel h3 {
+      font-size: 1rem; font-weight: 600;
+      color: var(--text);
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--surface);
+    }
+    .history-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(49,50,68,0.5);
+      font-size: 0.875rem;
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-item .h-icon {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 0.9rem;
+    }
+    .history-item .h-title { color: var(--text); font-weight: 500; }
+    .history-item .h-sub { color: var(--overlay); font-size: 0.75rem; }
+
+    /* =====================================================
+       TERMINAL WIDGET
+    ===================================================== */
+    .terminal {
+      background: var(--crust);
+      border: 1px solid var(--surface);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      font-family: var(--font-mono);
+    }
+    .terminal-bar {
+      background: var(--mantle);
+      border-bottom: 1px solid var(--surface);
+      padding: 10px 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .term-dot {
+      width: 11px; height: 11px; border-radius: 50%;
+    }
+    .term-dot.red   { background: var(--red); }
+    .term-dot.yellow{ background: var(--yellow); }
+    .term-dot.green { background: var(--green); }
+    .term-title {
+      margin-left: auto; margin-right: auto;
+      font-size: 0.75rem; color: var(--overlay);
+    }
+    .terminal-body {
+      padding: 1rem 1.25rem;
+      font-size: 0.82rem;
+      line-height: 1.75;
+      color: var(--green);
+      min-height: 180px;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+    .terminal-body .cmd { color: var(--blue); }
+    .terminal-body .out { color: var(--subtext); }
+    .terminal-body .warn { color: var(--yellow); }
+    .terminal-body .err { color: var(--red); }
+    .terminal-input-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 1.25rem 12px;
+      border-top: 1px solid var(--surface);
+    }
+    .terminal-input-row span { color: var(--green); font-size: 0.82rem; }
+    .terminal-input-row input {
+      flex: 1; background: none; border: none; outline: none;
+      color: var(--text); font-family: var(--font-mono);
+      font-size: 0.82rem; caret-color: var(--green);
+    }
+
+    /* =====================================================
+       TOAST
+    ===================================================== */
+    #toast-container {
+      position: fixed; bottom: 1.5rem; right: 1.5rem;
+      z-index: 9999;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .toast {
+      background: var(--mantle);
+      border: 1px solid var(--surface);
+      border-left: 3px solid var(--green);
+      border-radius: var(--radius);
+      padding: 12px 18px;
+      font-size: 0.85rem;
+      color: var(--text);
+      min-width: 200px;
+      animation: toast-in 0.3s ease, toast-out 0.3s ease 2.5s forwards;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    .toast.error { border-left-color: var(--red); }
+    @keyframes toast-in  { from { opacity:0; transform: translateX(20px) } to { opacity:1; transform: translateX(0) } }
+    @keyframes toast-out { from { opacity:1 } to { opacity:0; transform: translateX(20px) } }
+
+    /* =====================================================
+       BACK TO TOP
+    ===================================================== */
+    #back-top {
+      position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 200;
+      width: 40px; height: 40px;
+      background: var(--surface);
+      border: 1px solid rgba(203,166,247,0.2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      opacity: 0; pointer-events: none;
+      transition: all var(--transition);
+      color: var(--mauve);
+    }
+    #back-top.visible { opacity: 1; pointer-events: auto; }
+    #back-top:hover { background: rgba(203,166,247,0.1); }
+
+    /* =====================================================
+       VISITOR COUNTER
+    ===================================================== */
+    .visitor-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--overlay);
+      background: var(--mantle);
+      border: 1px solid var(--surface);
+      border-radius: 100px;
+      padding: 4px 12px;
+    }
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+    footer {
+      position: relative; z-index: 1;
+      background: var(--mantle);
+      border-top: 1px solid var(--surface);
+      padding: 2.5rem clamp(1rem, 5vw, 3rem);
+      text-align: center;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-brand {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--mauve);
+    }
+    .footer-links {
+      display: flex; gap: 1.5rem; flex-wrap: wrap;
+    }
+    .footer-links a {
+      font-size: 0.82rem;
+      color: var(--overlay);
+      transition: color var(--transition);
+    }
+    .footer-links a:hover { color: var(--text); }
+    .footer-copy {
+      font-size: 0.78rem;
+      color: var(--overlay);
+      margin-top: 0.5rem;
+    }
+
+    /* =====================================================
+       FADE ANIMATIONS
+    ===================================================== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =====================================================
+       MOBILE NAV OPEN
+    ===================================================== */
+    body.nav-open .nav-links {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: var(--nav-h); left: 0; right: 0;
+      background: rgba(24,24,37,0.97);
+      backdrop-filter: blur(14px);
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--surface);
+      gap: 6px;
+    }
+    body.nav-open .nav-links a,
+    body.nav-open .nav-links button { width: 100%; text-align: left; }
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+    @media (max-width: 900px) {
+      .about-grid, .contact-grid, .dash-grid {
+        grid-template-columns: 1fr;
+      }
+      .dash-sidebar { position: static; }
+    }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .nav-toggle { display: flex; }
+      .hero-stats { gap: 1.25rem; }
+      .stat-cards { grid-template-columns: 1fr 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- =====================================================
+     PROGRESS BAR
+===================================================== -->
+<div id="progress-bar" role="progressbar" aria-label="Reading progress"></div>
+
+<!-- =====================================================
+     LOADER
+===================================================== -->
+<div id="loader" aria-live="polite" aria-label="Loading">
+  <div class="loader-logo">$ initializing...</div>
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+
+<!-- =====================================================
+     CANVAS BACKGROUND
+===================================================== -->
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+<!-- =====================================================
+     TOAST CONTAINER
+===================================================== -->
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- =====================================================
+     BACK TO TOP
+===================================================== -->
+<button id="back-top" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+<nav id="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-brand" href="#" onclick="navigate('home'); return false;">
+      <span>&gt;</span>AtharvaSecuity<span class="blink">_</span>
+    </a>
+    <div class="nav-links" id="nav-links">
+      <a href="#" onclick="navigate('home'); return false;" data-page="home">Home</a>
+      <a href="#" onclick="navigate('blog'); return false;" data-page="blog">Blog</a>
+      <a href="#" onclick="navigate('videos'); return false;" data-page="videos">Videos</a>
+      <a href="#" onclick="navigate('about'); return false;" data-page="about">About</a>
+      <a href="#" onclick="navigate('contact'); return false;" data-page="contact">Contact</a>
+      <button id="nav-auth-login" onclick="navigate('login')" class="nav-cta">Login</button>
+      <button id="nav-auth-dash"  onclick="navigate('dashboard')" class="nav-cta" style="display:none">Dashboard</button>
+      <button id="nav-logout" onclick="logout()" style="display:none">Logout</button>
+    </div>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" onclick="document.body.classList.toggle('nav-open')">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+<main>
+
+  <!-- ===== HOME PAGE ===== -->
+  <div id="page-home" class="page active">
+    <!-- Hero -->
+    <section id="hero">
+      <div class="hero-inner">
+        <div class="hero-tag fade-in">Security Researcher &amp; Content Creator</div>
+        <h1 class="hero-name fade-in">
+          Hi, I'm <em>Atharva</em>
+        </h1>
+        <p class="hero-sub fade-in">
+          <span id="typed-text"></span><span id="typed-cursor" aria-hidden="true"></span>
+        </p>
+        <div class="hero-actions fade-in">
+          <button class="btn btn-primary" onclick="navigate('blog')">Read the Blog</button>
+          <a class="btn btn-ghost" href="https://www.youtube.com/@AtharvaSecurity/videos" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21.8 8.001a2.749 2.749 0 0 0-1.934-1.945C18.205 5.6 12 5.6 12 5.6s-6.205 0-7.866.456A2.749 2.749 0 0 0 2.2 8.001 28.8 28.8 0 0 0 1.75 12a28.8 28.8 0 0 0 .45 3.999 2.749 2.749 0 0 0 1.934 1.945C5.795 18.4 12 18.4 12 18.4s6.205 0 7.866-.456a2.749 2.749 0 0 0 1.934-1.945A28.8 28.8 0 0 0 22.25 12a28.8 28.8 0 0 0-.45-3.999zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
+            Watch Videos
+          </a>
+        </div>
+        <div class="hero-stats fade-in">
+          <div class="hero-stat"><strong id="stat-posts">0</strong><span>Blog Posts</span></div>
+          <div class="hero-stat"><strong id="stat-videos">0</strong><span>Videos</span></div>
+          <div class="hero-stat"><strong id="stat-visitors">0</strong><span>Visitors</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Posts -->
+    <section class="home-section">
+      <div class="section">
+        <p class="eyebrow fade-in">Latest from the blog</p>
+        <h2 class="section-title fade-in">Recent Writeups</h2>
+        <p class="section-sub fade-in">Tutorials, CTF solutions, and security research — straight to the point.</p>
+        <div class="card-grid" id="home-posts-grid"></div>
+        <div style="margin-top:2rem;">
+          <button class="btn btn-ghost fade-in" onclick="navigate('blog')">Explore All Posts →</button>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- Featured Videos -->
+    <section class="home-section">
+      <div class="section">
+        <p class="eyebrow fade-in">YouTube</p>
+        <h2 class="section-title fade-in">Featured Videos</h2>
+        <p class="section-sub fade-in">Watch tutorials and walkthroughs on my YouTube channel.</p>
+        <div class="card-grid" id="home-videos-grid"></div>
+        <div style="margin-top:2rem; display:flex; align-items:center; gap:12px;">
+          <a class="yt-link fade-in" href="https://www.youtube.com/@AtharvaSecurity/videos" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21.8 8.001a2.749 2.749 0 0 0-1.934-1.945C18.205 5.6 12 5.6 12 5.6s-6.205 0-7.866.456A2.749 2.749 0 0 0 2.2 8.001 28.8 28.8 0 0 0 1.75 12a28.8 28.8 0 0 0 .45 3.999 2.749 2.749 0 0 0 1.934 1.945C5.795 18.4 12 18.4 12 18.4s6.205 0 7.866-.456a2.749 2.749 0 0 0 1.934-1.945A28.8 28.8 0 0 0 22.25 12a28.8 28.8 0 0 0-.45-3.999zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
+            View All Videos on YouTube
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Terminal Widget -->
+    <section class="home-section">
+      <div class="section">
+        <p class="eyebrow fade-in">Interactive</p>
+        <h2 class="section-title fade-in">Security Terminal</h2>
+        <p class="section-sub fade-in">Try built-in commands. Type <code style="color:var(--mauve);font-family:var(--font-mono)">help</code> to get started.</p>
+        <div class="terminal fade-in" id="terminal-widget" style="max-width:680px;">
+          <div class="terminal-bar">
+            <span class="term-dot red"></span>
+            <span class="term-dot yellow"></span>
+            <span class="term-dot green"></span>
+            <span class="term-title">atharva@security:~$</span>
+          </div>
+          <div class="terminal-body" id="term-output">
+            <div class="out">Welcome to AtharvaSecuity Terminal v1.0</div>
+            <div class="out">Type <span class="cmd">help</span> for available commands.</div>
+            <div>&nbsp;</div>
+          </div>
+          <div class="terminal-input-row">
+            <span>$</span>
+            <input type="text" id="term-input" placeholder="type a command..." autocomplete="off" aria-label="Terminal input" />
+          </div>
+        </div>
+      </div>
+    </section>
+  </div><!-- /home -->
+
+  <!-- ===== BLOG PAGE ===== -->
+  <div id="page-blog" class="page">
+    <div class="section">
+      <div class="blog-header fade-in">
+        <p class="eyebrow">All Writeups</p>
+        <h1 class="section-title">Blog</h1>
+        <p class="section-sub">CTF writeups, tutorials, and security research in one place.</p>
+      </div>
+      <div class="search-bar fade-in">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="blog-search" placeholder="Search posts…" oninput="filterBlog()" />
+      </div>
+      <div class="filter-row fade-in" id="blog-filters"></div>
+      <div class="card-grid" id="blog-grid"></div>
+      <p id="blog-empty" style="color:var(--overlay);font-size:0.9rem;display:none;margin-top:1rem;">No posts match your search.</p>
+    </div>
+  </div>
+
+  <!-- ===== BLOG POST VIEW ===== -->
+  <div id="page-post" class="page">
+    <div class="section" style="max-width:760px;">
+      <button onclick="navigate('blog')" class="btn btn-ghost" style="margin-bottom:2rem;">← Back to Blog</button>
+      <div id="post-content"></div>
+    </div>
+  </div>
+
+  <!-- ===== VIDEOS PAGE ===== -->
+  <div id="page-videos" class="page">
+    <div class="section">
+      <p class="eyebrow fade-in">YouTube</p>
+      <h1 class="section-title fade-in">Video Library</h1>
+      <p class="section-sub fade-in">Watch on YouTube — subscribe for new videos every week.</p>
+      <div style="margin-bottom:2rem;" class="fade-in">
+        <a class="yt-link" href="https://www.youtube.com/@AtharvaSecurity/videos" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21.8 8.001a2.749 2.749 0 0 0-1.934-1.945C18.205 5.6 12 5.6 12 5.6s-6.205 0-7.866.456A2.749 2.749 0 0 0 2.2 8.001 28.8 28.8 0 0 0 1.75 12a28.8 28.8 0 0 0 .45 3.999 2.749 2.749 0 0 0 1.934 1.945C5.795 18.4 12 18.4 12 18.4s6.205 0 7.866-.456a2.749 2.749 0 0 0 1.934-1.945A28.8 28.8 0 0 0 22.25 12a28.8 28.8 0 0 0-.45-3.999zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
+          @AtharvaSecurity — Subscribe
+        </a>
+      </div>
+      <div class="card-grid" id="videos-grid"></div>
+    </div>
+  </div>
+
+  <!-- ===== ABOUT PAGE ===== -->
+  <div id="page-about" class="page">
+    <div class="section">
+      <p class="eyebrow fade-in">Who am I</p>
+      <h1 class="section-title fade-in">About Me</h1>
+      <div class="about-grid" style="margin-top:2.5rem;">
+        <div class="about-avatar-wrap fade-in">
+          <div class="about-avatar">🛡️</div>
+          <div class="about-social">
+            <a class="social-chip" href="https://github.com/" target="_blank" rel="noopener">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+              GitHub
+            </a>
+            <a class="social-chip" href="https://www.youtube.com/@AtharvaSecurity/videos" target="_blank" rel="noopener">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21.8 8.001a2.749 2.749 0 0 0-1.934-1.945C18.205 5.6 12 5.6 12 5.6s-6.205 0-7.866.456A2.749 2.749 0 0 0 2.2 8.001 28.8 28.8 0 0 0 1.75 12a28.8 28.8 0 0 0 .45 3.999 2.749 2.749 0 0 0 1.934 1.945C5.795 18.4 12 18.4 12 18.4s6.205 0 7.866-.456a2.749 2.749 0 0 0 1.934-1.945A28.8 28.8 0 0 0 22.25 12a28.8 28.8 0 0 0-.45-3.999zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
+              YouTube
+            </a>
+          </div>
+        </div>
+        <div class="about-content fade-in">
+          <h2>Atharva</h2>
+          <p class="role">// Security Researcher · CTF Player · Content Creator</p>
+          <p>I'm a cybersecurity enthusiast who breaks things to understand how they work. My focus is on web application security, network penetration testing, and CTF competitions — and I share everything I learn here and on YouTube.</p>
+          <p>When I'm not hunting for vulnerabilities or solving CTF challenges, I'm creating tutorials to help others get into the field. I believe security knowledge should be accessible to everyone.</p>
+          <p>My goal is to bridge the gap between complex security concepts and practical, real-world application — starting from zero, going to hero.</p>
+          <div style="margin-top:2rem;">
+            <p class="eyebrow" style="margin-bottom:1rem;">Skills &amp; Tools</p>
+            <div class="skills-grid">
+              <div class="skill-chip"><span class="dot"></span>Penetration Testing</div>
+              <div class="skill-chip"><span class="dot" style="background:var(--blue)"></span>Web App Security</div>
+              <div class="skill-chip"><span class="dot" style="background:var(--green)"></span>CTF Challenges</div>
+              <div class="skill-chip"><span class="dot" style="background:var(--peach)"></span>Burp Suite</div>
+              <div class="skill-chip"><span class="dot"></span>Nmap / Nessus</div>
+              <div class="skill-chip"><span class="dot" style="background:var(--blue)"></span>Python / Bash</div>
+              <div class="skill-chip"><span class="dot" style="background:var(--green)"></span>Linux / Kali</div>
+              <div class="skill-chip"><span class="dot" style="background:var(--peach)"></span>OSINT</div>
+              <div class="skill-chip"><span class="dot"></span>Metasploit</div>
+              <div class="skill-chip"><span class="dot" style="background:var(--pink)"></span>Wireshark</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CONTACT PAGE ===== -->
+  <div id="page-contact" class="page">
+    <div class="section">
+      <p class="eyebrow fade-in">Get in touch</p>
+      <h1 class="section-title fade-in">Contact</h1>
+      <div class="contact-grid" style="margin-top:2.5rem;">
+        <div class="contact-info fade-in">
+          <h3>Let's connect</h3>
+          <p>Have a question, collaboration idea, or just want to say hi? Reach out through any of these channels.</p>
+          <div class="contact-links">
+            <a class="contact-link" href="https://www.youtube.com/@AtharvaSecurity/videos" target="_blank" rel="noopener">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M21.8 8.001a2.749 2.749 0 0 0-1.934-1.945C18.205 5.6 12 5.6 12 5.6s-6.205 0-7.866.456A2.749 2.749 0 0 0 2.2 8.001 28.8 28.8 0 0 0 1.75 12a28.8 28.8 0 0 0 .45 3.999 2.749 2.749 0 0 0 1.934 1.945C5.795 18.4 12 18.4 12 18.4s6.205 0 7.866-.456a2.749 2.749 0 0 0 1.934-1.945A28.8 28.8 0 0 0 22.25 12a28.8 28.8 0 0 0-.45-3.999zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
+              @AtharvaSecurity on YouTube
+            </a>
+            <a class="contact-link" href="https://github.com/" target="_blank" rel="noopener">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+              GitHub (add your handle)
+            </a>
+          </div>
+        </div>
+        <div class="form-card fade-in">
+          <div class="form-group">
+            <label for="c-name">Your name</label>
+            <input class="form-control" type="text" id="c-name" placeholder="John Doe" />
+          </div>
+          <div class="form-group">
+            <label for="c-email">Email address</label>
+            <input class="form-control" type="email" id="c-email" placeholder="you@example.com" />
+          </div>
+          <div class="form-group">
+            <label for="c-msg">Message</label>
+            <textarea class="form-control" id="c-msg" placeholder="Write your message…"></textarea>
+          </div>
+          <button class="btn btn-primary" style="width:100%;" onclick="submitContact()">Send Message</button>
+          <p class="success-msg" id="contact-success">Message saved! I'll get back to you soon.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LOGIN PAGE ===== -->
+  <div id="page-login" class="page">
+    <div class="auth-wrap">
+      <div class="auth-card fade-in">
+        <h2>Welcome back</h2>
+        <p>Sign in to access your dashboard and saved articles.</p>
+        <div class="form-group">
+          <label for="l-email">Email</label>
+          <input class="form-control" type="email" id="l-email" placeholder="you@example.com" />
+          <p class="error-msg" id="l-email-err">Enter a valid email.</p>
+        </div>
+        <div class="form-group">
+          <label for="l-pass">Password</label>
+          <input class="form-control" type="password" id="l-pass" placeholder="••••••••" />
+          <p class="error-msg" id="l-pass-err">Password required.</p>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="l-remember" />
+          <label for="l-remember">Remember me</label>
+        </div>
+        <button class="btn btn-primary" style="width:100%;" onclick="doLogin()">Sign In</button>
+        <p class="error-msg visible" id="l-general-err" style="text-align:center;margin-top:.5rem;display:none;"></p>
+        <p class="auth-switch">Don't have an account? <button onclick="navigate('register')">Create one</button></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== REGISTER PAGE ===== -->
+  <div id="page-register" class="page">
+    <div class="auth-wrap">
+      <div class="auth-card fade-in">
+        <h2>Create account</h2>
+        <p>Join to save articles, track your reading, and more.</p>
+        <div class="form-group">
+          <label for="r-name">Display name</label>
+          <input class="form-control" type="text" id="r-name" placeholder="Atharva" />
+          <p class="error-msg" id="r-name-err">Name is required.</p>
+        </div>
+        <div class="form-group">
+          <label for="r-email">Email</label>
+          <input class="form-control" type="email" id="r-email" placeholder="you@example.com" />
+          <p class="error-msg" id="r-email-err">Enter a valid email.</p>
+        </div>
+        <div class="form-group">
+          <label for="r-pass">Password</label>
+          <input class="form-control" type="password" id="r-pass" placeholder="Min. 6 characters" />
+          <p class="error-msg" id="r-pass-err">Password must be at least 6 characters.</p>
+        </div>
+        <button class="btn btn-primary" style="width:100%;" onclick="doRegister()">Create Account</button>
+        <p class="error-msg" id="r-general-err" style="text-align:center;margin-top:.5rem;"></p>
+        <p class="auth-switch">Already have an account? <button onclick="navigate('login')">Sign in</button></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD PAGE ===== -->
+  <div id="page-dashboard" class="page">
+    <div class="section">
+      <div class="dash-grid">
+        <!-- Sidebar -->
+        <aside class="dash-sidebar fade-in">
+          <div class="dash-avatar" id="dash-avatar">👤</div>
+          <div class="dash-user-name" id="dash-name">User</div>
+          <div class="dash-user-role">// security enthusiast</div>
+          <nav class="dash-nav" aria-label="Dashboard navigation">
+            <button class="dash-nav-btn active" onclick="showDashTab('overview')">📊 Overview</button>
+            <button class="dash-nav-btn" onclick="showDashTab('saved')">🔖 Saved Articles</button>
+            <button class="dash-nav-btn" onclick="showDashTab('history')">🕐 Reading History</button>
+            <button class="dash-nav-btn" onclick="showDashTab('profile')">⚙️ Profile</button>
+          </nav>
+          <div style="margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--surface);">
+            <div class="visitor-badge">
+              <span>👁</span> Visitors: <strong id="visitor-count">0</strong>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main dashboard area -->
+        <div>
+          <!-- Overview tab -->
+          <div id="dash-tab-overview">
+            <div class="stat-cards" id="dash-stats"></div>
+            <div class="dash-panel fade-in">
+              <h3>Reading History</h3>
+              <div id="dash-history-list"></div>
+            </div>
+          </div>
+          <!-- Saved tab -->
+          <div id="dash-tab-saved" style="display:none;">
+            <div class="dash-panel fade-in">
+              <h3>Saved Articles</h3>
+              <div id="dash-saved-list"></div>
+            </div>
+          </div>
+          <!-- History tab -->
+          <div id="dash-tab-history" style="display:none;">
+            <div class="dash-panel fade-in">
+              <h3>Reading History</h3>
+              <div id="dash-history-full"></div>
+            </div>
+          </div>
+          <!-- Profile tab -->
+          <div id="dash-tab-profile" style="display:none;">
+            <div class="dash-panel fade-in">
+              <h3>Account Details</h3>
+              <div id="dash-profile-info" style="font-size:0.9rem;color:var(--subtext);line-height:2;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">&gt; AtharvaSecuity_</div>
+      <p class="footer-copy">© 2025 Atharva. Built with ❤️ and lots of coffee.</p>
+    </div>
+    <nav class="footer-links" aria-label="Footer links">
+      <a href="#" onclick="navigate('home');return false;">Home</a>
+      <a href="#" onclick="navigate('blog');return false;">Blog</a>
+      <a href="#" onclick="navigate('videos');return false;">Videos</a>
+      <a href="#" onclick="navigate('about');return false;">About</a>
+      <a href="https://www.youtube.com/@AtharvaSecurity/videos" target="_blank" rel="noopener">YouTube</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+<script>
+/* =====================================================
+   DATA
+===================================================== */
+const BLOG_POSTS = [
+  {
+    id: 'xss-portswigger',
+    title: 'XSS Explained: From Reflected to Stored — PortSwigger Labs',
+    desc: 'A deep-dive into cross-site scripting vulnerabilities with hands-on PortSwigger lab walkthroughs.',
+    category: 'Web Security',
+    tags: ['XSS', 'PortSwigger', 'Beginner'],
+    date: '2025-06-10',
+    readTime: 8,
+    emoji: '🕸️',
+    content: `
+      <h1 style="font-size:2rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">XSS Explained: From Reflected to Stored</h1>
+      <div style="font-family:var(--font-mono);font-size:0.78rem;color:var(--overlay);margin-bottom:2rem;">June 10, 2025 &nbsp;·&nbsp; 8 min read &nbsp;·&nbsp; <span style="color:var(--mauve)">Web Security</span></div>
+      <p style="color:var(--subtext);line-height:1.8;margin-bottom:1.25rem;">Cross-site scripting (XSS) is one of the most common web vulnerabilities. In this writeup we walk through reflected, stored, and DOM-based XSS using PortSwigger Academy labs.</p>
+      <h2 style="font-size:1.3rem;font-weight:600;color:var(--text);margin:2rem 0 0.75rem;">Reflected XSS</h2>
+      <p style="color:var(--subtext);line-height:1.8;margin-bottom:1.25rem;">The simplest form. Inject a payload into a URL parameter that's reflected back in the page response without sanitization. Example payload: <code style="font-family:var(--font-mono);color:var(--mauve);background:var(--surface);padding:1px 6px;border-radius:4px;">&lt;script&gt;alert(1)&lt;/script&gt;</code></p>
+      <h2 style="font-size:1.3rem;font-weight:600;color:var(--text);margin:2rem 0 0.75rem;">Stored XSS</h2>
+      <p style="color:var(--subtext);line-height:1.8;margin-bottom:1.25rem;">More dangerous — the payload is saved to the database and executed whenever any user views the page. Think comment boxes, profile fields, or product reviews.</p>
+      <h2 style="font-size:1.3rem;font-weight:600;color:var(--text);margin:2rem 0 0.75rem;">Prevention</h2>
+      <p style="color:var(--subtext);line-height:1.8;">Always encode output, use Content Security Policy (CSP) headers, and never trust user input.</p>
+    `
+  },
+  {
+    id: 'sqli-basics',
+    title: 'SQL Injection: Union-Based Extraction from Scratch',
+    desc: 'Step-by-step guide to identifying and exploiting SQL injection with UNION-based data extraction.',
+    category: 'Web Security',
+    tags: ['SQLi', 'PortSwigger', 'Intermediate'],
+    date: '2025-05-28',
+    readTime: 10,
+    emoji: '🗄️',
+    content: `
+      <h1 style="font-size:2rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">SQL Injection: Union-Based Extraction</h1>
+      <div style="font-family:var(--font-mono);font-size:0.78rem;color:var(--overlay);margin-bottom:2rem;">May 28, 2025 &nbsp;·&nbsp; 10 min read &nbsp;·&nbsp; <span style="color:var(--mauve)">Web Security</span></div>
+      <p style="color:var(--subtext);line-height:1.8;margin-bottom:1.25rem;">SQL injection remains one of the top OWASP vulnerabilities. This post covers how UNION-based SQLi works and how to extract data from the database step by step.</p>
+      <h2 style="font-size:1.3rem;font-weight:600;color:var(--text);margin:2rem 0 0.75rem;">Step 1: Find the Injection Point</h2>
+      <p style="color:var(--subtext);line-height:1.8;margin-bottom:1.25rem;">Add a single quote <code style="font-family:var(--font-mono);color:var(--mauve);background:var(--surface);padding:1px 6px;border-radius:4px;">'</code> to the parameter. If the app throws an error, you have a candidate.</p>
+      <h2 style="font-size:1.3rem;font-weight:600;color:var(--text);margin:2rem 0 0.75rem;">Step 2: Determine Column Count</h2>
+      <p style="color:var(--subtext);line-height:1.8;">Use <code style="font-family:var(--font-mono);color:var(--mauve);background:var(--surface);padding:1px 6px;border-radius:4px;">ORDER BY 1--</code>, <code style="font-family:var(--font-mono);color:var(--mauve);background:var(--surface);padding:1px 6px;border-radius:4px;">ORDER BY 2--</code> until an error occurs to find the column count.</p>
+    `
+  },
+  {
+    id: 'nmap-guide',
+    title: 'Nmap From Zero to Hero: Scanning Techniques That Matter',
+    desc: 'Master the most useful Nmap scan types for reconnaissance during penetration testing engagements.',
+    category: 'Networking',
+    tags: ['Nmap', 'Recon', 'Beginner'],
+    date: '2025-05-15',
+    readTime: 6,
+    emoji: '🌐',
+    content: `
+      <h1 style="font-size:2rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">Nmap From Zero to Hero</h1>
+      <div style="font-family:var(--font-mono);font-size:0.78rem;color:var(--overlay);margin-bottom:2rem;">May 15, 2025 &nbsp;·&nbsp; 6 min read &nbsp;·&nbsp; <span style="color:var(--mauve)">Networking</span></div>
+      <p style="color:var(--subtext);line-height:1.8;margin-bottom:1.25rem;">Nmap is the go-to tool for network discovery and port scanning. Here are the techniques that actually matter during a real pentest.</p>
+      <pre style="background:var(--crust);border:1px solid var(--surface);border-radius:8px;padding:1rem;font-family:var(--font-mono);font-size:0.8rem;color:var(--green);overflow-x:auto;margin-bottom:1.25rem;"># Aggressive scan — OS detection + scripts + version detection
+nmap -A -T4 &lt;target&gt;
+
+# Stealth SYN scan
+nmap -sS -p- &lt;target&gt;
+
+# Service + version detection
+nmap -sV -sC &lt;target&gt;</pre>
+      <p style="color:var(--subtext);line-height:1.8;">Always have written authorization before scanning any network you don't own.</p>
+    `
+  },
+  {
+    id: 'burp-intro',
+    title: 'Getting Started with Burp Suite: Intercepting HTTP Traffic',
+    desc: 'Set up Burp Suite, configure the proxy, and start intercepting web application traffic in under 15 minutes.',
+    category: 'Tools',
+    tags: ['Burp Suite', 'Tools', 'Beginner'],
+    date: '2025-04-30',
+    readTime: 7,
+    emoji: '🔧',
+    content: `
+      <h1 style="font-size:2rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">Getting Started with Burp Suite</h1>
+      <div style="font-family:var(--font-mono);font-size:0.78rem;color:var(--overlay);margin-bottom:2rem;">April 30, 2025 &nbsp;·&nbsp; 7 min read &nbsp;·&nbsp; <span style="color:var(--mauve)">Tools</span></div>
+      <p style="color:var(--subtext);line-height:1.8;margin-bottom:1.25rem;">Burp Suite Community Edition is free and powerful. In this guide you'll learn to set up the proxy and intercept your first HTTP request.</p>
+      <p style="color:var(--subtext);line-height:1.8;">Configure your browser to use <code style="font-family:var(--font-mono);color:var(--mauve);background:var(--surface);padding:1px 6px;border-radius:4px;">127.0.0.1:8080</code> as the HTTP proxy, install the Burp CA certificate, and you're ready to inspect every request and response.</p>
+    `
+  },
+  {
+    id: 'ctf-picoctf',
+    title: 'PicoCTF 2025 Writeup: Web Category All Solves',
+    desc: 'Complete walkthroughs for every web challenge in PicoCTF 2025, from easy to expert difficulty.',
+    category: 'CTF',
+    tags: ['CTF', 'PicoCTF', 'Writeup'],
+    date: '2025-04-10',
+    readTime: 15,
+    emoji: '🏴',
+    content: `
+      <h1 style="font-size:2rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">PicoCTF 2025: Web Category All Solves</h1>
+      <div style="font-family:var(--font-mono);font-size:0.78rem;color:var(--overlay);margin-bottom:2rem;">April 10, 2025 &nbsp;·&nbsp; 15 min read &nbsp;·&nbsp; <span style="color:var(--mauve)">CTF</span></div>
+      <p style="color:var(--subtext);line-height:1.8;margin-bottom:1.25rem;">PicoCTF is the perfect place for beginners to learn. Here are my solutions to all web challenges from the 2025 edition.</p>
+      <p style="color:var(--subtext);line-height:1.8;">Each challenge teaches a different concept: cookie manipulation, JWT attacks, SSRF, path traversal, and more. Work through them in order — the difficulty ramps up gradually.</p>
+    `
+  },
+  {
+    id: 'linux-privesc',
+    title: 'Linux Privilege Escalation: SUID Binaries and Sudo Misconfigs',
+    desc: 'Common privilege escalation techniques using SUID bit, sudo misconfigurations, and cron job abuse.',
+    category: 'Linux',
+    tags: ['Linux', 'Privesc', 'Intermediate'],
+    date: '2025-03-22',
+    readTime: 12,
+    emoji: '🐧',
+    content: `
+      <h1 style="font-size:2rem;font-weight:700;color:var(--text);margin-bottom:0.5rem;">Linux Privilege Escalation</h1>
+      <div style="font-family:var(--font-mono);font-size:0.78rem;color:var(--overlay);margin-bottom:2rem;">March 22, 2025 &nbsp;·&nbsp; 12 min read &nbsp;·&nbsp; <span style="color:var(--mauve)">Linux</span></div>
+      <p style="color:var(--subtext);line-height:1.8;margin-bottom:1.25rem;">Got a low-privilege shell? Here's how to escalate. We cover SUID binaries, sudo -l misconfigs, and writable cron jobs.</p>
+      <pre style="background:var(--crust);border:1px solid var(--surface);border-radius:8px;padding:1rem;font-family:var(--font-mono);font-size:0.8rem;color:var(--green);overflow-x:auto;"># Find SUID binaries
+find / -perm -4000 -type f 2>/dev/null
+
+# Check sudo permissions
+sudo -l</pre>
+    `
+  }
+];
+
+const VIDEOS = [
+  {
+    id: 'v1',
+    title: 'How to Set Up a Hacking Lab for Free in 2025',
+    desc: 'Step-by-step guide to building a full pentesting environment using VirtualBox, Kali Linux, and vulnerable VMs.',
+    url: 'https://www.youtube.com/@AtharvaSecurity/videos',
+    duration: '18:24',
+    emoji: '🖥️',
+    featured: true
+  },
+  {
+    id: 'v2',
+    title: 'Burp Suite Tutorial for Beginners — Intercept, Repeater, Intruder',
+    desc: 'Learn the three most important Burp Suite features used in every web application penetration test.',
+    url: 'https://www.youtube.com/@AtharvaSecurity/videos',
+    duration: '22:10',
+    emoji: '🔧',
+    featured: true
+  },
+  {
+    id: 'v3',
+    title: 'SQL Injection From Zero — Manual to Automated with SQLMap',
+    desc: 'Understand SQL injection conceptually, exploit it manually, then automate with SQLMap on a real target.',
+    url: 'https://www.youtube.com/@AtharvaSecurity/videos',
+    duration: '31:05',
+    emoji: '🗄️',
+    featured: true
+  },
+  {
+    id: 'v4',
+    title: 'Nmap Scanning Masterclass — Every Flag You Need',
+    desc: 'Every Nmap scan type explained with practical examples. SYN, UDP, OS detection, scripting engine and more.',
+    url: 'https://www.youtube.com/@AtharvaSecurity/videos',
+    duration: '15:48',
+    emoji: '🌐',
+    featured: false
+  },
+  {
+    id: 'v5',
+    title: 'TryHackMe Room Walkthrough: Mr Robot CTF',
+    desc: 'Full walkthrough of the classic Mr Robot room on TryHackMe — enumeration, exploitation, and privilege escalation.',
+    url: 'https://www.youtube.com/@AtharvaSecurity/videos',
+    duration: '42:17',
+    emoji: '🤖',
+    featured: false
+  },
+  {
+    id: 'v6',
+    title: 'OSINT Techniques — Finding Information Like a Pro',
+    desc: 'Learn how investigators and hackers use open-source intelligence to gather information about targets legally.',
+    url: 'https://www.youtube.com/@AtharvaSecurity/videos',
+    duration: '26:33',
+    emoji: '🔍',
+    featured: false
+  }
+];
+
+/* =====================================================
+   STATE
+===================================================== */
+let currentPage = 'home';
+let currentUser  = null;
+let blogFilter   = 'All';
+let blogSearch   = '';
+
+/* =====================================================
+   LOCALSTORAGE HELPERS
+===================================================== */
+const LS = {
+  get: k => { try { return JSON.parse(localStorage.getItem(k)) } catch { return null } },
+  set: (k, v) => localStorage.setItem(k, JSON.stringify(v)),
+  del: k => localStorage.removeItem(k)
+};
+
+/* =====================================================
+   VISITOR COUNTER
+===================================================== */
+function initVisitors() {
+  let v = LS.get('visitor_count') || 0;
+  v++;
+  LS.set('visitor_count', v);
+  document.querySelectorAll('#visitor-count, #stat-visitors').forEach(el => el.textContent = v.toLocaleString());
+}
+
+/* =====================================================
+   AUTH STATE
+===================================================== */
+function initAuth() {
+  // Check remember me
+  const remembered = LS.get('remember_user');
+  const session    = LS.get('session_user');
+  currentUser = session || remembered || null;
+  updateAuthUI();
+}
+
+function updateAuthUI() {
+  const loggedIn = !!currentUser;
+  document.getElementById('nav-auth-login').style.display = loggedIn ? 'none' : '';
+  document.getElementById('nav-auth-dash').style.display  = loggedIn ? '' : 'none';
+  document.getElementById('nav-logout').style.display     = loggedIn ? '' : 'none';
+}
+
+function doRegister() {
+  const name  = document.getElementById('r-name').value.trim();
+  const email = document.getElementById('r-email').value.trim();
+  const pass  = document.getElementById('r-pass').value;
+
+  let ok = true;
+  const show = (id, msg, show) => {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.style.display = show ? 'block' : 'none';
+  };
+
+  if (!name)  { show('r-name-err',  'Name is required.', true);          ok = false; }
+  else          show('r-name-err',  '', false);
+  if (!email || !/\S+@\S+\.\S+/.test(email)) { show('r-email-err', 'Enter a valid email.', true); ok = false; }
+  else          show('r-email-err', '', false);
+  if (pass.length < 6) { show('r-pass-err', 'Password must be at least 6 characters.', true); ok = false; }
+  else          show('r-pass-err',  '', false);
+
+  if (!ok) return;
+
+  const users = LS.get('users') || {};
+  if (users[email]) { show('r-general-err', 'An account with this email already exists.', true); return; }
+  users[email] = { name, email, passHash: btoa(pass), joinDate: new Date().toLocaleDateString() };
+  LS.set('users', users);
+
+  // Auto login
+  currentUser = users[email];
+  LS.set('session_user', currentUser);
+  updateAuthUI();
+  toast('Account created! Welcome, ' + name + '.');
+  navigate('dashboard');
+}
+
+function doLogin() {
+  const email = document.getElementById('l-email').value.trim();
+  const pass  = document.getElementById('l-pass').value;
+  const rem   = document.getElementById('l-remember').checked;
+  const errEl = document.getElementById('l-general-err');
+
+  errEl.style.display = 'none';
+
+  const users = LS.get('users') || {};
+  const user  = users[email];
+  if (!user || user.passHash !== btoa(pass)) {
+    errEl.textContent = 'Invalid email or password.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  currentUser = user;
+  LS.set('session_user', user);
+  if (rem) LS.set('remember_user', user);
+  else LS.del('remember_user');
+
+  updateAuthUI();
+  toast('Welcome back, ' + user.name + '!');
+  navigate('dashboard');
+}
+
+function logout() {
+  currentUser = null;
+  LS.del('session_user');
+  LS.del('remember_user');
+  updateAuthUI();
+  toast('Signed out.');
+  navigate('home');
+}
+
+/* =====================================================
+   ROUTER / NAVIGATION
+===================================================== */
+function navigate(page) {
+  // Require auth for dashboard
+  if (page === 'dashboard' && !currentUser) { navigate('login'); return; }
+
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+  currentPage = page;
+
+  // Update nav active state
+  document.querySelectorAll('.nav-links [data-page]').forEach(a => {
+    a.classList.toggle('active', a.dataset.page === page);
+  });
+
+  // Close mobile nav
+  document.body.classList.remove('nav-open');
+
+  // Page-specific inits
+  if (page === 'home')      renderHome();
+  if (page === 'blog')      renderBlog();
+  if (page === 'videos')    renderVideos();
+  if (page === 'dashboard') renderDashboard();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  initFadeIn();
+}
+
+/* =====================================================
+   RENDER HOME
+===================================================== */
+function renderHome() {
+  // Featured posts (latest 3)
+  const grid = document.getElementById('home-posts-grid');
+  if (grid) grid.innerHTML = BLOG_POSTS.slice(0, 3).map(postCard).join('');
+
+  // Featured videos
+  const vgrid = document.getElementById('home-videos-grid');
+  if (vgrid) vgrid.innerHTML = VIDEOS.filter(v => v.featured).map(videoCard).join('');
+
+  // Stats
+  document.getElementById('stat-posts').textContent  = BLOG_POSTS.length;
+  document.getElementById('stat-videos').textContent = VIDEOS.length;
+}
+
+/* =====================================================
+   RENDER BLOG
+===================================================== */
+function renderBlog() {
+  // Build filters
+  const cats = ['All', ...new Set(BLOG_POSTS.map(p => p.category))];
+  const filtersEl = document.getElementById('blog-filters');
+  if (filtersEl) {
+    filtersEl.innerHTML = cats.map(c =>
+      `<button class="filter-btn ${c === blogFilter ? 'active' : ''}" onclick="setBlogFilter('${c}')">${c}</button>`
+    ).join('');
+  }
+  filterBlog();
+}
+
+function setBlogFilter(cat) {
+  blogFilter = cat;
+  renderBlog();
+}
+
+function filterBlog() {
+  const q = (document.getElementById('blog-search')?.value || '').toLowerCase();
+  blogSearch = q;
+  const filtered = BLOG_POSTS.filter(p => {
+    const matchCat  = blogFilter === 'All' || p.category === blogFilter;
+    const matchQ    = !q || p.title.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q) || p.tags.some(t => t.toLowerCase().includes(q));
+    return matchCat && matchQ;
+  });
+  const grid  = document.getElementById('blog-grid');
+  const empty = document.getElementById('blog-empty');
+  if (grid)  grid.innerHTML  = filtered.map(postCard).join('');
+  if (empty) empty.style.display = filtered.length ? 'none' : 'block';
+}
+
+/* =====================================================
+   RENDER VIDEOS
+===================================================== */
+function renderVideos() {
+  const grid = document.getElementById('videos-grid');
+  if (grid) grid.innerHTML = VIDEOS.map(videoCard).join('');
+}
+
+/* =====================================================
+   CARD TEMPLATES
+===================================================== */
+function postCard(post) {
+  const saved    = (LS.get('saved_posts')    || []).includes(post.id);
+  const dateStr  = new Date(post.date).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+  return `
+    <article class="card" onclick="openPost('${post.id}')">
+      <div class="card-thumb">
+        <div class="card-thumb-placeholder">${post.emoji}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="tag">${post.category}</span>
+          <span>${dateStr}</span>
+          <span>${post.readTime} min read</span>
+        </div>
+        <h3 class="card-title">${post.title}</h3>
+        <p class="card-desc">${post.desc}</p>
+        <div class="card-footer">
+          <span>${post.tags.map(t => `<span style="color:var(--overlay);font-size:0.75rem">#${t}</span>`).join(' ')}</span>
+          <button onclick="event.stopPropagation();savePost('${post.id}')" aria-label="Save article" style="color:${saved ? 'var(--mauve)' : 'var(--blue)'}">
+            ${saved ? '🔖 Saved' : '+ Save'}
+          </button>
+        </div>
+      </div>
+    </article>`;
+}
+
+function videoCard(video) {
+  return `
+    <article class="card">
+      <div class="card-thumb" style="position:relative;">
+        <div class="card-thumb-placeholder">${video.emoji}</div>
+        <span class="video-badge">${video.duration}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span class="tag" style="border-color:rgba(250,179,135,0.25);background:rgba(250,179,135,0.08);color:var(--peach)">Video</span></div>
+        <h3 class="card-title">${video.title}</h3>
+        <p class="card-desc">${video.desc}</p>
+        <div class="card-footer">
+          <span></span>
+          <a class="watch-btn" href="${video.url}" target="_blank" rel="noopener">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M21.8 8.001a2.749 2.749 0 0 0-1.934-1.945C18.205 5.6 12 5.6 12 5.6s-6.205 0-7.866.456A2.749 2.749 0 0 0 2.2 8.001 28.8 28.8 0 0 0 1.75 12a28.8 28.8 0 0 0 .45 3.999 2.749 2.749 0 0 0 1.934 1.945C5.795 18.4 12 18.4 12 18.4s6.205 0 7.866-.456a2.749 2.749 0 0 0 1.934-1.945A28.8 28.8 0 0 0 22.25 12a28.8 28.8 0 0 0-.45-3.999zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
+            Watch on YouTube
+          </a>
+        </div>
+      </div>
+    </article>`;
+}
+
+/* =====================================================
+   OPEN POST
+===================================================== */
+function openPost(id) {
+  const post = BLOG_POSTS.find(p => p.id === id);
+  if (!post) return;
+
+  // Track history
+  const history = LS.get('read_history') || [];
+  if (!history.find(h => h.id === id)) {
+    history.unshift({ id, title: post.title, date: new Date().toLocaleDateString(), emoji: post.emoji });
+    LS.set('read_history', history.slice(0, 20));
+  }
+
+  document.getElementById('post-content').innerHTML = post.content;
+  navigate('post');
+}
+
+/* =====================================================
+   SAVE POST
+===================================================== */
+function savePost(id) {
+  if (!currentUser) { toast('Sign in to save articles.', 'error'); return; }
+  const saved = LS.get('saved_posts') || [];
+  const idx   = saved.indexOf(id);
+  if (idx > -1) { saved.splice(idx, 1); toast('Removed from saved.'); }
+  else           { saved.push(id);      toast('Article saved!'); }
+  LS.set('saved_posts', saved);
+  // Re-render current page
+  if (currentPage === 'blog') filterBlog();
+  if (currentPage === 'home') renderHome();
+}
+
+/* =====================================================
+   RENDER DASHBOARD
+===================================================== */
+function renderDashboard() {
+  if (!currentUser) return;
+  document.getElementById('dash-name').textContent   = currentUser.name;
+  document.getElementById('dash-avatar').textContent = currentUser.name[0].toUpperCase();
+
+  const saved   = (LS.get('saved_posts')   || []).map(id => BLOG_POSTS.find(p => p.id === id)).filter(Boolean);
+  const history = LS.get('read_history')  || [];
+
+  // Stat cards
+  document.getElementById('dash-stats').innerHTML = `
+    <div class="stat-card"><div class="val">${BLOG_POSTS.length}</div><div class="lbl">Blog Posts</div></div>
+    <div class="stat-card"><div class="val">${VIDEOS.length}</div><div class="lbl">Videos</div></div>
+    <div class="stat-card"><div class="val">${saved.length}</div><div class="lbl">Saved</div></div>
+    <div class="stat-card"><div class="val">${history.length}</div><div class="lbl">Read</div></div>
+  `;
+
+  // Recent history (overview)
+  const histEl = document.getElementById('dash-history-list');
+  histEl.innerHTML = history.slice(0, 5).map(h => `
+    <div class="history-item">
+      <div class="h-icon">${h.emoji}</div>
+      <div><div class="h-title">${h.title}</div><div class="h-sub">${h.date}</div></div>
+    </div>
+  `).join('') || '<p style="color:var(--overlay);font-size:0.85rem;">No reading history yet. Start reading!</p>';
+
+  // Full history
+  document.getElementById('dash-history-full').innerHTML = histEl.innerHTML;
+
+  // Saved list
+  document.getElementById('dash-saved-list').innerHTML = saved.length ? saved.map(p => `
+    <div class="history-item">
+      <div class="h-icon">${p.emoji}</div>
+      <div>
+        <div class="h-title">${p.title}</div>
+        <div class="h-sub">${p.category} · ${p.readTime} min read</div>
+      </div>
+      <button onclick="openPost('${p.id}')" class="btn btn-ghost" style="padding:5px 12px;font-size:0.78rem;margin-left:auto;">Read</button>
+    </div>
+  `).join('') : '<p style="color:var(--overlay);font-size:0.85rem;">No saved articles yet.</p>';
+
+  // Profile
+  document.getElementById('dash-profile-info').innerHTML = `
+    <p><strong style="color:var(--text)">Name:</strong> ${currentUser.name}</p>
+    <p><strong style="color:var(--text)">Email:</strong> ${currentUser.email}</p>
+    <p><strong style="color:var(--text)">Member since:</strong> ${currentUser.joinDate || 'N/A'}</p>
+  `;
+}
+
+function showDashTab(tab) {
+  ['overview','saved','history','profile'].forEach(t => {
+    document.getElementById('dash-tab-' + t).style.display = t === tab ? '' : 'none';
+  });
+  document.querySelectorAll('.dash-nav-btn').forEach((btn, i) => {
+    const tabs = ['overview','saved','history','profile'];
+    btn.classList.toggle('active', tabs[i] === tab);
+  });
+}
+
+/* =====================================================
+   CONTACT
+===================================================== */
+function submitContact() {
+  const name  = document.getElementById('c-name').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const msg   = document.getElementById('c-msg').value.trim();
+  if (!name || !email || !msg) { toast('Please fill all fields.', 'error'); return; }
+
+  const msgs = LS.get('contact_msgs') || [];
+  msgs.push({ name, email, msg, date: new Date().toISOString() });
+  LS.set('contact_msgs', msgs);
+
+  document.getElementById('contact-success').style.display = 'block';
+  document.getElementById('c-name').value = '';
+  document.getElementById('c-email').value = '';
+  document.getElementById('c-msg').value = '';
+  toast('Message sent!');
+}
+
+/* =====================================================
+   TERMINAL
+===================================================== */
+const TERM_CMDS = {
+  help: () => [
+    '<span class="out">Available commands:</span>',
+    '<span class="cmd">whoami</span>      — about Atharva',
+    '<span class="cmd">skills</span>      — show skill set',
+    '<span class="cmd">socials</span>     — show social links',
+    '<span class="cmd">blog</span>        — list recent posts',
+    '<span class="cmd">youtube</span>     — open YouTube channel',
+    '<span class="cmd">clear</span>       — clear terminal',
+  ].join('\n'),
+  whoami: () => '<span class="out">Atharva — Security researcher, CTF player, content creator.\nSharing cybersecurity knowledge one post at a time.</span>',
+  skills: () => '<span class="out">Web App Pentesting, Network Recon, CTF, Burp Suite,\nNmap, SQLMap, Metasploit, Python, Bash, OSINT</span>',
+  socials: () => '<span class="out">YouTube: <a href="https://www.youtube.com/@AtharvaSecurity/videos" target="_blank" rel="noopener" style="color:var(--blue)">@AtharvaSecurity</a>\nGitHub:  (update with your handle)</span>',
+  blog:    () => BLOG_POSTS.slice(0,3).map(p => `<span class="out">· ${p.title}</span>`).join('\n'),
+  youtube: () => { window.open('https://www.youtube.com/@AtharvaSecurity/videos','_blank'); return '<span class="out">Opening YouTube…</span>'; },
+  clear:   () => '__clear__',
+};
+
+function initTerminal() {
+  const input  = document.getElementById('term-input');
+  const output = document.getElementById('term-output');
+  if (!input || !output) return;
+  input.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const cmd = input.value.trim().toLowerCase();
+    input.value = '';
+    if (!cmd) return;
+
+    appendTerm(`<span class="cmd">$ ${cmd}</span>`, output);
+    const fn = TERM_CMDS[cmd];
+    if (fn) {
+      const res = fn();
+      if (res === '__clear__') { output.innerHTML = ''; }
+      else appendTerm(res, output);
+    } else {
+      appendTerm(`<span class="err">command not found: ${cmd}. Type <span class="cmd">help</span>.</span>`, output);
+    }
+  });
+}
+
+function appendTerm(html, output) {
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  output.appendChild(div);
+  output.scrollTop = output.scrollHeight;
+}
+
+/* =====================================================
+   TYPING ANIMATION
+===================================================== */
+const TYPED_STRINGS = [
+  'Learning to break things, ethically.',
+  'CTF player. Security researcher.',
+  'Making hacking tutorials on YouTube.',
+  'Building the next generation of defenders.',
+];
+let typedIdx = 0, charIdx = 0, deleting = false;
+
+function typeLoop() {
+  const el   = document.getElementById('typed-text');
+  if (!el) return;
+  const str  = TYPED_STRINGS[typedIdx];
+  if (!deleting) {
+    el.textContent = str.slice(0, charIdx + 1);
+    charIdx++;
+    if (charIdx === str.length) { deleting = true; setTimeout(typeLoop, 1800); return; }
+  } else {
+    el.textContent = str.slice(0, charIdx - 1);
+    charIdx--;
+    if (charIdx === 0) { deleting = false; typedIdx = (typedIdx + 1) % TYPED_STRINGS.length; setTimeout(typeLoop, 300); return; }
+  }
+  setTimeout(typeLoop, deleting ? 40 : 70);
+}
+
+/* =====================================================
+   PARTICLE BACKGROUND
+===================================================== */
+function initCanvas() {
+  const canvas = document.getElementById('bg-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const pts = [];
+  const N   = 55;
+
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 0; i < N; i++) {
+    pts.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 1.5 + 0.5,
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const p of pts) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height;
+      if (p.y > canvas.height) p.y = 0;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(203,166,247,0.18)';
+      ctx.fill();
+
+      for (const q of pts) {
+        const dx = p.x - q.x, dy = p.y - q.y;
+        const d  = Math.sqrt(dx * dx + dy * dy);
+        if (d < 130) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = `rgba(137,180,250,${0.04 * (1 - d / 130)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+/* =====================================================
+   SCROLL EFFECTS
+===================================================== */
+function initScroll() {
+  const bar   = document.getElementById('progress-bar');
+  const top   = document.getElementById('back-top');
+  window.addEventListener('scroll', () => {
+    const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    if (bar) bar.style.width = pct + '%';
+    if (top) top.classList.toggle('visible', window.scrollY > 300);
+  }, { passive: true });
+}
+
+/* =====================================================
+   FADE IN OBSERVER
+===================================================== */
+function initFadeIn() {
+  const els = document.querySelectorAll('.fade-in:not(.visible)');
+  if (!('IntersectionObserver' in window)) {
+    els.forEach(el => el.classList.add('visible'));
+    return;
+  }
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  els.forEach(el => obs.observe(el));
+}
+
+/* =====================================================
+   TOAST
+===================================================== */
+function toast(msg, type = 'success') {
+  const container = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast${type === 'error' ? ' error' : ''}`;
+  t.textContent = msg;
+  container.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+/* =====================================================
+   BOOT
+===================================================== */
+window.addEventListener('DOMContentLoaded', () => {
+  initAuth();
+  initVisitors();
+  initCanvas();
+  initScroll();
+  initTerminal();
+  typeLoop();
+
+  // Render initial home page data
+  renderHome();
+
+  // Hide loader
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+    initFadeIn();
+  }, 1300);
+});
+</script>
+</body>
+</html>
