@@ -539,6 +539,7 @@
       transition: color var(--transition);
     }
     .watch-btn:hover { color: #ffc09e; }
+    .card:hover .play-overlay { opacity: 1 !important; }
 
     /* =====================================================
        ABOUT PAGE
@@ -1236,9 +1237,9 @@
       <h1 class="section-title fade-in">About Me</h1>
       <div class="about-grid" style="margin-top:2.5rem;">
         <div class="about-avatar-wrap fade-in">
-          <div class="about-avatar">https://www.youtube.com/channel/UCvLvXnK7SyKlFtgMSXiOUeQ/</div>
+          <div class="about-avatar">🛡️</div>
           <div class="about-social">
-            <a class="social-chip" href="https://github.com/AtharvaSecurity" target="_blank" rel="noopener">
+            <a class="social-chip" href="https://github.com/" target="_blank" rel="noopener">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
               GitHub
             </a>
@@ -1436,7 +1437,7 @@
   <div class="footer-inner">
     <div>
       <div class="footer-brand">&gt; AtharvaSecuity_</div>
-      <p class="footer-copy">© 2026 Atharva. Built with ❤️ Youtube.</p>
+      <p class="footer-copy">© 2025 Atharva. Built with ❤️ and lots of coffee.</p>
     </div>
     <nav class="footer-links" aria-label="Footer links">
       <a href="#" onclick="navigate('home');return false;">Home</a>
@@ -1576,57 +1577,59 @@ sudo -l</pre>
 
 const VIDEOS = [
   {
-    id: 'v1',
-    title: 'How to Set Up a Hacking Lab for Free in 2025',
-    desc: 'Step-by-step guide to building a full pentesting environment using VirtualBox, Kali Linux, and vulnerable VMs.',
-    url: 'https://www.youtube.com/@AtharvaSecurity/videos',
-    duration: '18:24',
-    emoji: '🖥️',
+    id: 'F5fGO10ks3s',
+    title: 'I Rooted AnonForce in Minutes! 🔥 | FIT CTF Boot2Root',
+    desc: 'Full Boot2Root walkthrough of the AnonForce machine from FIT CTF — enumeration, exploitation, and root in minutes.',
+    url: 'https://youtu.be/F5fGO10ks3s',
     featured: true
   },
   {
-    id: 'v2',
-    title: 'Burp Suite Tutorial for Beginners — Intercept, Repeater, Intruder',
-    desc: 'Learn the three most important Burp Suite features used in every web application penetration test.',
-    url: 'https://www.youtube.com/@AtharvaSecurity/videos',
-    duration: '22:10',
-    emoji: '🔧',
+    id: '-rjkRDQCJ7Q',
+    title: 'How I Hacked an Android Banking App (Reverse Engineering)',
+    desc: 'Static and dynamic reverse engineering of an Android banking APK — decompiling, bypassing certificate pinning, and exposing vulnerabilities.',
+    url: 'https://youtu.be/-rjkRDQCJ7Q',
     featured: true
   },
   {
-    id: 'v3',
-    title: 'SQL Injection From Zero — Manual to Automated with SQLMap',
-    desc: 'Understand SQL injection conceptually, exploit it manually, then automate with SQLMap on a real target.',
-    url: 'https://www.youtube.com/@AtharvaSecurity/videos',
-    duration: '31:05',
-    emoji: '🗄️',
+    id: 'C77BJuJ9gTM',
+    title: 'Ordering Free Food Using This Hack',
+    desc: 'Ethical demonstration of a web vulnerability in a food ordering platform — how parameter tampering can lead to real-world fraud.',
+    url: 'https://youtu.be/C77BJuJ9gTM',
     featured: true
   },
   {
-    id: 'v4',
-    title: 'Nmap Scanning Masterclass — Every Flag You Need',
-    desc: 'Every Nmap scan type explained with practical examples. SYN, UDP, OS detection, scripting engine and more.',
-    url: 'https://www.youtube.com/@AtharvaSecurity/videos',
-    duration: '15:48',
-    emoji: '🌐',
+    id: 'YtkZ0v2t0XQ',
+    title: 'Live CCTV Hacking — Ethical Demo',
+    desc: 'Ethical walkthrough of how misconfigured CCTV cameras are exposed on the internet and how attackers access them.',
+    url: 'https://youtu.be/YtkZ0v2t0XQ',
     featured: false
   },
   {
-    id: 'v5',
-    title: 'TryHackMe Room Walkthrough: Mr Robot CTF',
-    desc: 'Full walkthrough of the classic Mr Robot room on TryHackMe — enumeration, exploitation, and privilege escalation.',
-    url: 'https://www.youtube.com/@AtharvaSecurity/videos',
-    duration: '42:17',
-    emoji: '🤖',
+    id: 'kTjfzCExr38',
+    title: 'I Solved Battery CTF — TryHackMe Walkthrough',
+    desc: 'Full walkthrough of the Battery CTF room on TryHackMe — web exploitation, privilege escalation, and capturing the flag.',
+    url: 'https://youtu.be/kTjfzCExr38',
     featured: false
   },
   {
-    id: 'v6',
-    title: 'OSINT Techniques — Finding Information Like a Pro',
-    desc: 'Learn how investigators and hackers use open-source intelligence to gather information about targets legally.',
-    url: 'https://www.youtube.com/@AtharvaSecurity/videos',
-    duration: '26:33',
-    emoji: '🔍',
+    id: 'SpNB1gtPai4',
+    title: 'React2Shell — Vulnerability Exposed',
+    desc: 'How a misconfigured React application leaks sensitive data and leads to remote code execution via exposed shell capabilities.',
+    url: 'https://youtu.be/SpNB1gtPai4',
+    featured: false
+  },
+  {
+    id: 'Lo5Yvvq_1-g',
+    title: 'n8n Vulnerability — CVE Walkthrough',
+    desc: 'Exploiting a real CVE in the n8n workflow automation tool — from discovery to proof-of-concept exploit demonstration.',
+    url: 'https://youtu.be/Lo5Yvvq_1-g',
+    featured: false
+  },
+  {
+    id: 'Rwc65rpObYM',
+    title: 'Kali Linux on Windows 11 — VMware Setup Guide',
+    desc: 'Step-by-step guide to installing Kali Linux inside VMware on Windows 11 — perfect for building your first hacking lab.',
+    url: 'https://youtu.be/Rwc65rpObYM',
     featured: false
   }
 ];
@@ -1864,26 +1867,55 @@ function postCard(post) {
 }
 
 function videoCard(video) {
+  // Use hqdefault for best quality thumbnail — always available for any public video
+  const thumb = `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`;
   return `
-    <article class="card">
-      <div class="card-thumb" style="position:relative;">
-        <div class="card-thumb-placeholder">${video.emoji}</div>
-        <span class="video-badge">${video.duration}</span>
+    <article class="card" onclick="window.open('${video.url}','_blank')" style="cursor:pointer;">
+      <div class="card-thumb" style="position:relative;overflow:hidden;">
+        <img
+          src="${thumb}"
+          alt="${video.title} thumbnail"
+          loading="lazy"
+          style="width:100%;height:100%;object-fit:cover;aspect-ratio:16/9;display:block;"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+        />
+        <div class="card-thumb-placeholder" style="display:none;position:absolute;inset:0;">▶</div>
+        <!-- Play overlay -->
+        <div style="
+          position:absolute;inset:0;
+          display:flex;align-items:center;justify-content:center;
+          background:rgba(17,17,27,0.35);
+          opacity:0;transition:opacity 0.22s;
+        " class="play-overlay">
+          <div style="
+            width:48px;height:48px;border-radius:50%;
+            background:rgba(250,179,135,0.9);
+            display:flex;align-items:center;justify-content:center;
+            box-shadow:0 0 20px rgba(250,179,135,0.5);
+          ">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#11111b"><polygon points="5,3 19,12 5,21"/></svg>
+          </div>
+        </div>
       </div>
       <div class="card-body">
-        <div class="card-meta"><span class="tag" style="border-color:rgba(250,179,135,0.25);background:rgba(250,179,135,0.08);color:var(--peach)">Video</span></div>
+        <div class="card-meta">
+          <span class="tag" style="border-color:rgba(250,179,135,0.25);background:rgba(250,179,135,0.08);color:var(--peach)">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style="display:inline;vertical-align:middle;margin-right:3px;"><path d="M21.8 8.001a2.749 2.749 0 0 0-1.934-1.945C18.205 5.6 12 5.6 12 5.6s-6.205 0-7.866.456A2.749 2.749 0 0 0 2.2 8.001 28.8 28.8 0 0 0 1.75 12a28.8 28.8 0 0 0 .45 3.999 2.749 2.749 0 0 0 1.934 1.945C5.795 18.4 12 18.4 12 18.4s6.205 0 7.866-.456a2.749 2.749 0 0 0 1.934-1.945A28.8 28.8 0 0 0 22.25 12a28.8 28.8 0 0 0-.45-3.999zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
+            YouTube
+          </span>
+        </div>
         <h3 class="card-title">${video.title}</h3>
         <p class="card-desc">${video.desc}</p>
         <div class="card-footer">
           <span></span>
-          <a class="watch-btn" href="${video.url}" target="_blank" rel="noopener">
+          <a class="watch-btn" href="${video.url}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M21.8 8.001a2.749 2.749 0 0 0-1.934-1.945C18.205 5.6 12 5.6 12 5.6s-6.205 0-7.866.456A2.749 2.749 0 0 0 2.2 8.001 28.8 28.8 0 0 0 1.75 12a28.8 28.8 0 0 0 .45 3.999 2.749 2.749 0 0 0 1.934 1.945C5.795 18.4 12 18.4 12 18.4s6.205 0 7.866-.456a2.749 2.749 0 0 0 1.934-1.945A28.8 28.8 0 0 0 22.25 12a28.8 28.8 0 0 0-.45-3.999zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
             Watch on YouTube
           </a>
         </div>
       </div>
     </article>`;
-}
+}  // end videoCard
 
 /* =====================================================
    OPEN POST
